@@ -95,7 +95,7 @@ public class ImageImporter {
 		String fullfilename= image.getName();
 		String filetype = fullfilename.substring(fullfilename.lastIndexOf(".") + 1, fullfilename.length());
 		String filename= fullfilename.substring(0, fullfilename.lastIndexOf("."));
-		File destination= new File("C:\\Users\\Arun\\Desktop\\hello1\\" + filename + "ASCII." + filetype);
+		File destination= new File(filename + "ASCII." + filetype);
 		ImageIO.write(img, filetype, destination);
 
 
