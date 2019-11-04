@@ -19,7 +19,7 @@ public class ImageImporter {
 	}
 
 	//Assume image is already in grayscale and only has 3 bands and at least bigger than 8x8 pixels
-	public static void toASCII(File image) throws IOException, Exception{
+	public static void toASCII(File image) throws IOException, IllegalArgumentException{
 		System.out.println(image.getName());
 		BufferedImage img = ImageIO.read(image);
 		WritableRaster raster = (WritableRaster) img.getData();
@@ -83,7 +83,11 @@ public class ImageImporter {
 					count++;
 				}
 				for (int k = 0; k < diffs.length; k++) {
-					diffs[k] = ImageImporter.comparison(holder1band, CharacterImporter.charArray.get(charRamp[k]));
+					try {
+						diffs[k] = ImageImporter.comparison(holder1band, CharacterImporter.charArray.get(charRamp[k]));
+					} catch (Exception e) {
+						System.out.println("Input does not match character ramp size");
+					}
 				}
 				int minimum = Integer.MAX_VALUE;
 				int minIndex = 0;
@@ -100,7 +104,7 @@ public class ImageImporter {
 		String fullfilename = image.getName();
 		String filetype = fullfilename.substring(fullfilename.lastIndexOf(".") + 1, fullfilename.length());
 		String filename= fullfilename.substring(0, fullfilename.lastIndexOf("."));
-		File destination = new File(filename + "ASCII." + filetype);
+		File destination = new File(image.getParent() + File.separator + filename + "_ASCII." + filetype);
 		ImageIO.write(img, filetype, destination);
 	}
 
@@ -141,8 +145,11 @@ public class ImageImporter {
 		//use this for the writableraster
 		raster.setPixels(0, 0, raster.getWidth(), raster.getHeight(), grayscale);
 		img.setData(raster);
-		File destination = new File("image_gray.jpg");
-		ImageIO.write(img, "jpg", destination);
+		String fullfilename = image.getName();
+		String filetype = fullfilename.substring(fullfilename.lastIndexOf(".") + 1, fullfilename.length());
+		String filename= fullfilename.substring(0, fullfilename.lastIndexOf("."));
+		File destination = new File(image.getParent() + File.separator + filename + "_gray." + filetype);
+		ImageIO.write(img, filetype, destination);
 	}
 
 	//compares two bit arrays of size 8x8 and determines the difference between them
@@ -150,10 +157,10 @@ public class ImageImporter {
 	//difference of 0 means both arrays are the same
 	//one array will be the map of a character, the other a portion of the image
 	//true means value of 1 (or black pixel), false means value of 0 (or white pixel)
-	public static int comparison(boolean[][] a, boolean[][] b) throws Exception {
+	public static int comparison(boolean[][] a, boolean[][] b) throws IllegalArgumentException {
 		//check for same size
 		if (a.length != b.length || a[0].length != b[0].length) {
-			throw new Exception("Arrays not the same size");
+			throw new IllegalArgumentException("Arrays not the same size");
 		}
 		int difference = 0;
 		//assume 2d arrays are rectangular in shape and a and b are the same size
