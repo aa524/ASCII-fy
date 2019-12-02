@@ -17,6 +17,7 @@ Converts a JPEG image into an ASCII representation.
 2. View converted grayscale and ASCII images, along with original at: `/ASCII-fy/target/test-classes`.
 
 ## TODO
+0. Allow users to input custom ASCII character ramps
 1. Add a better example in the README.
 2. Add arguments parser and allow user to specify input and output file name.
 3. Add support for images with alpha channels (e.g. pngs).
